@@ -114,7 +114,7 @@ im_out = im_th | im_floodfill_inv
 cv2.imwrite("ThresholdedImage.bmp",im_th)
 cv2.imwrite("FloodfilledImage.bmp",im_floodfill)
 cv2.imwrite("InvertedFloodfilledImage.bmp",im_floodfill_inv)
-cv2.imwrite("Foreground.bmp", im_out)
+cv2.imwrite("Fill.bmp", im_out)
 
 
 # Work Arounds for plt.show()
