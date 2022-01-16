@@ -31,6 +31,13 @@ def snp_noise(img):
 # Turn Img to grayscale
 grayimg = cv2.imread('a12_Color.png',cv2.IMREAD_GRAYSCALE)
 cv2.imwrite('snp_apple.png',snp_noise(grayimg))
+snpimg = cv2.imread('snp_apple.png')
+
+# Linear Filtering:Convolution
+kernel = np.ones((5,5),np.float32)/25
+Convo = cv2.filter2D(snp_noise(grayimg),-1,kernel)
+cv2.imwrite('Convolution.png',Convo)
+
 
 # Apply Median Filtering 
 m_blur = cv2.medianBlur(snp_noise(grayimg), 3) # (img source,kernel size)
@@ -41,9 +48,9 @@ g_blur = cv2.GaussianBlur(snp_noise(grayimg),(5,5),0) # (img,kernel,width,length
 cv2.imwrite('gasblur.png',g_blur)
 
 # Adaptive Filter Mean and Gauss
-adapt_filter_mean = cv2.adaptiveThreshold(m_blur,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
+adapt_filter_mean = cv2.adaptiveThreshold(snp_noise(grayimg),255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
 cv2.imwrite('adaptive_mean_threshold.png',adapt_filter_mean)
-adapt_filter_gauss = cv2.adaptiveThreshold(m_blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+adapt_filter_gauss = cv2.adaptiveThreshold(snp_noise(grayimg),255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
 cv2.imwrite('adaptive_gauss_threshold.png',adapt_filter_gauss)
 
 # Sobel
@@ -114,7 +121,7 @@ im_out = im_th | im_floodfill_inv
 cv2.imwrite("ThresholdedImage.bmp",im_th)
 cv2.imwrite("FloodfilledImage.bmp",im_floodfill)
 cv2.imwrite("InvertedFloodfilledImage.bmp",im_floodfill_inv)
-cv2.imwrite("Foreground.bmp", im_out)
+cv2.imwrite("Fill.bmp", im_out)
 
 
 # Work Arounds for plt.show()
@@ -130,20 +137,18 @@ imgSobxy = cv2.imread('Sobel XY.png')
 # to fill in matrixes
 blanks = np.zeros((100,100,3), dtype=np.uint8)
                                 
-titles = ['Original Image', 'Grayscaled', 'Noise Application','Median Blurring',
+titles = ['Original Image', 'Grayscaled', 'Noise Application','Median Blurring','Gaussian Blurring', "Convolution",
           'Adaptive Filtering Mean', 'Adaptive Filtering Gaussian',
-          'Gaussian Blurring',
           'Sobel Detection X', 'Sobel Detection Y', 'Full Sobel Edge Detection',
           'Prewitt X', 'Prewitt Y', 'Full Prewitt Edge Detection',
           'Robert Edge Detection', 
           'Canny Edge Detection',
           'Otsu Threshold',
           'Erosion', 'Dilation', 'Opening', 'Closing', 'Fill',
-          'Blank','Blank','Blank','Blank'] 
+          'Blank','Blank','Blank'] 
 
-images = [img, grayimg, snp_noise(grayimg), m_blur,
+images = [img, grayimg, snp_noise(grayimg), m_blur, g_blur, Convo,
           adapt_filter_mean, adapt_filter_gauss,
-          g_blur,
           imgSobx, imgSoby, imgSobxy,
           img_prewittx, img_prewitty, img_prewittxy,
           realrob,
